@@ -14,24 +14,33 @@ namespace ArchieB
         {
             string configFilePath = Environment.CurrentDirectory + "\\archieB.conf";
             {
+                //Setup console 
                 Console.Title = "ArchieB";
                 Console.WindowHeight = 40;
                 Console.CursorVisible = false;
+
+                //Read config file
                 string json = File.ReadAllText(configFilePath);
-                ConfigurationReader cr = JsonConvert.DeserializeObject<ConfigurationReader>(json);
-                var config = cr.CreateConfiguration();
-
-                bool keepRunning = true;
-
+                Configuration config = new Configuration();
+                try
+                {
+                    ConfigurationReader cr = JsonConvert.DeserializeObject<ConfigurationReader>(json);
+                    config = cr.CreateConfiguration();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                //Initialize Logitech SDK and load lighting modes
                 LogitechGSDK.LogiLedInit();
-
                 CpuTime cpuTime = new CpuTime(300, config);
                 MemUsage memUsage = new MemUsage(1000, config);
-
                 Console.WriteLine("Press any key to exit.");
                 memUsage.Start();
                 cpuTime.Start();
 
+                //Wait for key input to exit
+                bool keepRunning = true;
                 while (keepRunning)
                 {
                     Console.ReadKey();                    

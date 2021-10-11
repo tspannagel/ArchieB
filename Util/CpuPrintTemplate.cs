@@ -8,14 +8,16 @@ namespace ArchieB.Util
 {
     internal class CpuPrintTemplate
     {
-
+        //Lines of text comprising a infobox
         List<string> infoBox;
-        int boxWidth = 16;
+        //width of an infobox
+        int boxWidth = 18;
         ConsoleColor color = ConsoleColor.White;
         public CpuPrintTemplate(float usage, string instance)
         {
             infoBox = new List<string>();
             
+            //Create horizontal line for top and bottom
             string horizon = "";
             string usageStr = Math.Round(usage).ToString();
             for(int i = 0; i < BoxWidth; i++)
@@ -24,6 +26,7 @@ namespace ArchieB.Util
             }
             infoBox.Add(horizon);
 
+            //create line with borders and cpuName
             string cpuLine = "| CPU";
             string white = "";
             for (int i = 0; i < (BoxWidth - cpuLine.Length - instance.Length-1); i++)
@@ -32,15 +35,20 @@ namespace ArchieB.Util
             }
             infoBox.Add(cpuLine + instance + white + "|");
 
+            //Create line with bordes to display usage 
             string usageLine = "| Usage (%): " + usageStr;
             white = "";
-            for (int i = 0; i < (BoxWidth - usageLine.Length - usageStr.Length); i++)
+            for (int i = 0; i < (BoxWidth - usageLine.Length-1); i++)
             {
                 white += " ";
             }
             usageLine += white + "|";
             infoBox.Add(usageLine);
+
+            //add bottom border
             infoBox.Add(horizon);
+
+            //Set box-specific color
             Color = ConsolePrinter.DetermineConsoleColor(Convert.ToInt32(Math.Round(usage)));
         }
 

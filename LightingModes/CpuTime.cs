@@ -78,7 +78,11 @@ namespace ArchieB.LightingModes
         {
             run = false;
         }
-
+        /// <summary>
+        /// Calculate percentage of red and green to create "dynamic" color ranging from green over yellow to red and set key color accordingly
+        /// </summary>
+        /// <param name="key">Key which has to be changed</param>
+        /// <param name="cpuTime">cpu usage in percent to calulate color</param>
         private void CalculateAndSetColor(keyboardNames key, float cpuTime)
         {
             int redPercent = Convert.ToInt32(((2 * (cpuTime / 100) * 255) / 255) * 100) % 100;
