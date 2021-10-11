@@ -57,8 +57,6 @@
     <Compile Include="Util\ConsoleArea.cs" />
     <Compile Include="Util\ConsolePrinter.cs" />
     <Compile Include="Util\CpuPrintTemplate.cs" />
-    <Compile Include="Util\MainMenu.cs" />
-    <Compile Include="Util\MenuEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

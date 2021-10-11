@@ -14,6 +14,8 @@ namespace ArchieB
         {
             string configFilePath = Environment.CurrentDirectory + "\\archieB.conf";
             {
+                Console.Title = "ArchieB";
+                Console.WriteLine("Press any key to exit.");
                 Console.WindowHeight = 40;
                 Console.CursorVisible = false;
                 string json = File.ReadAllText(configFilePath);
@@ -32,7 +34,7 @@ namespace ArchieB
 
                 while (keepRunning)
                 {
-                    Console.ReadKey();
+                    Console.ReadKey();                    
                     return;
                 }
             }
