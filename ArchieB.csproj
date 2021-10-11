@@ -54,7 +54,6 @@
     <Compile Include="Util\ConfigurationReader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\ConsoleArea.cs" />
     <Compile Include="Util\ConsolePrinter.cs" />
     <Compile Include="Util\CpuPrintTemplate.cs" />
   </ItemGroup>

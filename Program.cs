@@ -15,7 +15,6 @@ namespace ArchieB
             string configFilePath = Environment.CurrentDirectory + "\\archieB.conf";
             {
                 Console.Title = "ArchieB";
-                Console.WriteLine("Press any key to exit.");
                 Console.WindowHeight = 40;
                 Console.CursorVisible = false;
                 string json = File.ReadAllText(configFilePath);
@@ -29,6 +28,7 @@ namespace ArchieB
                 CpuTime cpuTime = new CpuTime(300, config);
                 MemUsage memUsage = new MemUsage(1000, config);
 
+                Console.WriteLine("Press any key to exit.");
                 memUsage.Start();
                 cpuTime.Start();
 
