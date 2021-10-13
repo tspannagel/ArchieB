@@ -33,9 +33,9 @@ namespace ArchieB
                 }
                 //Initialize Logitech SDK and load lighting modes
                 LogitechGSDK.LogiLedInit();
-                CpuTime cpuTime = new CpuTime(300, config);
-                MemUsage memUsage = new MemUsage(1000, config);
-                Console.WriteLine("Press any key to exit.");
+                CpuTime cpuTime = new CpuTime(config);
+                MemUsage memUsage = new MemUsage(config);
+                Console.WriteLine("Press x to exit. CPU-Cycle(ms): {0} | RAM-Cycle(ms): {1}",config.CpuTime, config.MemTime);
                 memUsage.Start();
                 cpuTime.Start();
 
@@ -43,8 +43,11 @@ namespace ArchieB
                 bool keepRunning = true;
                 while (keepRunning)
                 {
-                    Console.ReadKey();                    
-                    return;
+                    var key = Console.ReadKey();
+                    if (key.KeyChar == 'x')
+                    {
+                        return;
+                    }
                 }
             }
         }

@@ -13,19 +13,13 @@ namespace ArchieB.LightingModes
     {
         ComputerInfo ci;
         bool run = false;
-        int sleepTimer = 0;
-        List<keyboardNames> memKeys;
-        List<int[]> colors;
+        Configuration configuration;
 
-        public MemUsage(int sleep, Configuration config)
+        public MemUsage(Configuration config)
         {
             ci = new ComputerInfo();
-            sleepTimer = sleep;
-
-            memKeys = config.GetMemKeys();
-
-            colors = config.GetMemColors();
             run = true;
+            configuration = config;
         }
 
         public Task Start()
@@ -50,15 +44,15 @@ namespace ArchieB.LightingModes
 
                     for (int i = 0; i <= usageTensNumber; i++)
                     {
-                        setKey(memKeys[i], colors[i][0], colors[i][1], colors[i][2], 10);
+                        setKey(configuration.MemKeys[i], configuration.MemColors[i][0], configuration.MemColors[i][1], configuration.MemColors[i][2], 10); ;
                         if (i == usageTensNumber || i < 10)
                         {
-                            setKey(memKeys[i + 1], colors[i + 1][0], colors[i + 1][1], colors[i + 1][2], usageSinglesNumber);
+                            setKey(configuration.MemKeys[i + 1], configuration.MemColors[i + 1][0], configuration.MemColors[i + 1][1], configuration.MemColors[i + 1][2], usageSinglesNumber);
                         }
                     }
 
                     ConsolePrinter.Instance.PrintMemoryUsage(ramTotalMb, ramUsedMb, ramUsagePercent);
-                    System.Threading.Thread.Sleep(sleepTimer);
+                    System.Threading.Thread.Sleep(configuration.MemTime);
                 }
             });
         }

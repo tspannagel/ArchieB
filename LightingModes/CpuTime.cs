@@ -14,17 +14,18 @@ namespace ArchieB.LightingModes
         List<PerformanceCounter> cpuCounter;
         PerformanceCounter perfCounter;
         PerformanceCounterCategory perfCounterCategory = new PerformanceCounterCategory("Processor Information");
-        List<keyboardNames> cpuKeys;
+  
+        Configuration configuration;
+
 
         bool run = false;
-        int sleepTimer = 0;
-        public CpuTime(int sleep, Configuration config)
+        public CpuTime(Configuration config)
         {
             cpuCounter = new List<PerformanceCounter>();
             perfCounter = new PerformanceCounter("Processor Information", "% Processor Time");
             perfCounterCategory = new PerformanceCounterCategory("Processor Information");
-            cpuKeys = config.GetCpuKeys();
-            sleepTimer = sleep;
+            
+            configuration = config;
             run = true;
         }
 
@@ -37,7 +38,7 @@ namespace ArchieB.LightingModes
                 cores.AddRange(perfCounterCategory.GetInstanceNames());
                 cores.Remove("0,_Total"); //dunno?!
 
-                if(cores.Count != cpuKeys.Count)
+                if(cores.Count != configuration.CpuKeys.Count)
                 {
                     Console.WriteLine("ERROR: Too few keys defined for cpu keys.");
                 }
@@ -56,19 +57,35 @@ namespace ArchieB.LightingModes
                 while (run)
                 {
                     int keyIterator = 0; //iterator for cpuKeys
+                    float totalusage = 0;
                     List<CpuPrintTemplate> cpuTemplates = new List<CpuPrintTemplate>();
 
                     foreach(PerformanceCounter counter in cpuCounter)
                     {
                         var usage = counter.NextValue();
                         cpuTemplates.Add(new CpuPrintTemplate(usage, counter.InstanceName));
-                        var key = cpuKeys[keyIterator];
+                        if(counter.InstanceName == "_Total")
+                        {
+                            totalusage = usage;
+                        }
+                        
+                        var key = configuration.CpuKeys[keyIterator];
                         CalculateAndSetColor(key, usage);
                         
                         keyIterator++;
                     }
                     ConsolePrinter.Instance.PrintCpuUsage(cpuTemplates);
-                    System.Threading.Thread.Sleep(sleepTimer);
+
+                    double sleepMultiplier = 1;
+                    if(totalusage >= 98)
+                    {//increas cycle time to reduce console output
+                        sleepMultiplier = 1.5;
+                    }
+                    else
+                    {
+                        sleepMultiplier = 1;
+                    }
+                    System.Threading.Thread.Sleep((int)(configuration.CpuTime * sleepMultiplier));
                 }
             });
 

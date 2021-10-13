@@ -14,20 +14,30 @@ namespace ArchieB.Util
         public List<string> cpuKeys;
         public List<string> memKeys;
         public List<int[]> memColors;
+        public int cpuTime;
+        public int memTime;
+        public CpuMode cpuMode;
+
         public ConfigurationReader()
         {
             cpuKeys = new List<string>();
             memKeys = new List<string>();
             memColors = new List<int[]>();
+            cpuTime = 300;
+            memTime = 1000;
+            cpuMode = CpuMode.Keys;
         }
 
+        //instantiate based on json
         public Configuration CreateConfiguration()
         {
             Configuration config = new Configuration();
             config.CpuKeys = ParseTextToKey(cpuKeys);
             config.MemKeys = ParseTextToKey(memKeys);
             config.MemColors = memColors;
-
+            config.CpuTime = cpuTime;
+            config.MemTime = memTime;
+            config.CpuMode = cpuMode;
             return config;
         }
 
@@ -44,4 +54,6 @@ namespace ArchieB.Util
             return keyNames;
         }
     }
+
+    enum CpuMode { Keys, Total}
 }
