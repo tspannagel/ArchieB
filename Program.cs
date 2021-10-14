@@ -31,12 +31,23 @@ namespace ArchieB
                 {
                     Console.WriteLine(ex.Message);
                 }
+
                 //Initialize Logitech SDK and load lighting modes
                 LogitechGSDK.LogiLedInit();
+
                 CpuTime cpuTime = new CpuTime(config);
-                MemUsage memUsage = new MemUsage(config);
-                Console.WriteLine("Press x to exit. CPU-Cycle(ms): {0} | RAM-Cycle(ms): {1}",config.CpuTime, config.MemTime);
-                memUsage.Start();
+
+                string output = "Press x to exit. CPU-Cycle(ms) " + config.CpuTime;
+
+                if (config.CpuMode == CpuMode.keys)
+                {
+                    MemUsage memUsage = new MemUsage(config);
+                    memUsage.Start();
+                    output += " | RAM-Cycle(ms): " + config.MemTime;
+                }
+
+                Console.WriteLine(output);
+
                 cpuTime.Start();
 
                 //Wait for key input to exit

@@ -31,7 +31,9 @@ namespace ArchieB.Util
             memColors = new List<int[]>();
             cpuTime = 300;
             memTime = 1000;
-            cpuMode = CpuMode.Keys;
+            cpuMode = CpuMode.keys;
         }
     }
+
+    enum CpuMode { keys, total, max }
 }

@@ -14,7 +14,7 @@ namespace ArchieB.LightingModes
         List<PerformanceCounter> cpuCounter;
         PerformanceCounter perfCounter;
         PerformanceCounterCategory perfCounterCategory = new PerformanceCounterCategory("Processor Information");
-  
+
         Configuration configuration;
 
 
@@ -24,7 +24,7 @@ namespace ArchieB.LightingModes
             cpuCounter = new List<PerformanceCounter>();
             perfCounter = new PerformanceCounter("Processor Information", "% Processor Time");
             perfCounterCategory = new PerformanceCounterCategory("Processor Information");
-            
+
             configuration = config;
             run = true;
         }
@@ -38,7 +38,7 @@ namespace ArchieB.LightingModes
                 cores.AddRange(perfCounterCategory.GetInstanceNames());
                 cores.Remove("0,_Total"); //dunno?!
 
-                if(cores.Count != configuration.CpuKeys.Count)
+                if (cores.Count != configuration.CpuKeys.Count)
                 {
                     Console.WriteLine("ERROR: Too few keys defined for cpu keys.");
                 }
@@ -57,44 +57,72 @@ namespace ArchieB.LightingModes
                 while (run)
                 {
                     int keyIterator = 0; //iterator for cpuKeys
-                    float totalusage = 0;
+                    float totalUsage = 0;
+
                     List<CpuPrintTemplate> cpuTemplates = new List<CpuPrintTemplate>();
 
-                    foreach(PerformanceCounter counter in cpuCounter)
+                    float maxUsage = 0;
+                    foreach (PerformanceCounter counter in cpuCounter)
                     {
                         var usage = counter.NextValue();
                         cpuTemplates.Add(new CpuPrintTemplate(usage, counter.InstanceName));
-                        if(counter.InstanceName == "_Total")
+
+                        if (usage > maxUsage)
                         {
-                            totalusage = usage;
+                            maxUsage = usage;
                         }
-                        
+
+                        if (counter.InstanceName == "_Total")
+                        {
+                            totalUsage = usage;
+                        }
+
                         var key = configuration.CpuKeys[keyIterator];
-                        CalculateAndSetColor(key, usage);
-                        
+
+                        if (configuration.CpuMode == CpuMode.keys)
+                        {
+                            CalculateAndSetColor(key, usage);
+                        }
                         keyIterator++;
                     }
-                    ConsolePrinter.Instance.PrintCpuUsage(cpuTemplates);
 
-                    double sleepMultiplier = 1;
-                    if(totalusage >= 98)
-                    {//increas cycle time to reduce console output
-                        sleepMultiplier = 1.5;
-                    }
-                    else
+                    switch (configuration.CpuMode)
                     {
-                        sleepMultiplier = 1;
+                        case CpuMode.total:
+                            CalculateAndSetColor(keyboardNames.ESC, totalUsage);
+                            break;
+                        case CpuMode.max:
+                            CalculateAndSetColor(keyboardNames.ESC, maxUsage);
+                            break;
+                        default: break;
                     }
-                    System.Threading.Thread.Sleep((int)(configuration.CpuTime * sleepMultiplier));
+
+                    ConsolePrinter.Instance.PrintCpuUsage(cpuTemplates);
+                    System.Threading.Thread.Sleep(calculateTimer(totalUsage, configuration));
                 }
             });
+        }
 
+        private static int calculateTimer(float usage, Configuration config)
+        {
+            double sleepMultiplier = 1;
+            if (usage >= 98)
+            {//increas cycle time to reduce console output
+                sleepMultiplier = 1.5;
+            }
+            else
+            {
+                sleepMultiplier = 1;
+            }
+
+            return (int)(config.CpuTime * sleepMultiplier);
         }
 
         public void Stop()
         {
             run = false;
         }
+
         /// <summary>
         /// Calculate percentage of red and green to create "dynamic" color ranging from green over yellow to red and set key color accordingly
         /// </summary>
@@ -104,8 +132,21 @@ namespace ArchieB.LightingModes
         {
             int redPercent = Convert.ToInt32(((2 * (cpuTime / 100) * 255) / 255) * 100) % 100;
             int greenPercent = Convert.ToInt32(((255 - (cpuTime / 100) * 255) / 255) * 100);
+            switch (configuration.CpuMode)
+            {
+                case CpuMode.keys:
+                    LogitechGSDK.LogiLedSetLightingForKeyWithKeyName(key, redPercent, greenPercent, 0);
+                    break;
+                case CpuMode.total:
+                    LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Keyboard, 0, redPercent, greenPercent, 0);
+                    break;
+                case CpuMode.max:
+                    LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Keyboard, 0, redPercent, greenPercent, 0);
+                    break;
 
-            LogitechGSDK.LogiLedSetLightingForKeyWithKeyName(key, redPercent, greenPercent, 0);
+            }
+
+            LogitechGSDK.LogiLedSetLightingForTargetZone(DeviceType.Keyboard, 1, redPercent, greenPercent, 0);
         }
     }
 }

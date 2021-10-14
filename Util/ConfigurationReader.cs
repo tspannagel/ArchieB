@@ -25,7 +25,7 @@ namespace ArchieB.Util
             memColors = new List<int[]>();
             cpuTime = 300;
             memTime = 1000;
-            cpuMode = CpuMode.Keys;
+            cpuMode = CpuMode.keys;
         }
 
         //instantiate based on json
@@ -55,5 +55,4 @@ namespace ArchieB.Util
         }
     }
 
-    enum CpuMode { Keys, Total}
 }
