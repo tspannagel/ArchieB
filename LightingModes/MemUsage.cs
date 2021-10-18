@@ -42,13 +42,25 @@ namespace ArchieB.LightingModes
 
                     //Console.WriteLine("Usage: {0}", ramUsagePercent);
 
+                    //update "used" keys
                     for (int i = 0; i <= usageTensNumber; i++)
                     {
-                        setKey(configuration.MemKeys[i], configuration.MemColors[i][0], configuration.MemColors[i][1], configuration.MemColors[i][2], 10); ;
+                        setKey(configuration.MemKeys[i], configuration.MemColors[i][0], configuration.MemColors[i][1], configuration.MemColors[i][2], 10);
                         if (i == usageTensNumber || i < 10)
                         {
                             setKey(configuration.MemKeys[i + 1], configuration.MemColors[i + 1][0], configuration.MemColors[i + 1][1], configuration.MemColors[i + 1][2], usageSinglesNumber);
-                        }
+                        }                       
+                    }
+
+                    //restore remaining keys
+                    int residualKeys = usageTensNumber+1;
+                    if(usageSinglesNumber > 0)
+                    {
+                        residualKeys++;
+                    }
+                    for (int i = residualKeys; i < 10; i++)
+                    {
+                        LogitechGSDK.LogiLedRestoreLightingForKey(configuration.MemKeys[i]);
                     }
 
                     ConsolePrinter.Instance.PrintMemoryUsage(ramTotalMb, ramUsedMb, ramUsagePercent);
