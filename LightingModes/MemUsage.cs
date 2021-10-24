@@ -59,28 +59,6 @@ namespace ArchieB.LightingModes
 
                     }
 
-                    ////update "used" keys
-                    //for (int i = 0; i < 10; i++)
-                    //{
-                    //    if (i <= usageTensNumber)
-                    //    {
-                    //        setKey(configuration.MemKeys[i], configuration.MemColors[i][0], configuration.MemColors[i][1], configuration.MemColors[i][2], 10);
-                    //    }
-                    //    else
-                    //    {
-                    //        if (i > usageTensNumber)
-                    //        {
-                    //            if (usageSinglesNumber > 0)
-                    //            {
-                    //                setKey(configuration.MemKeys[i + 1], configuration.MemColors[i + 1][0], configuration.MemColors[i + 1][1], configuration.MemColors[i + 1][2], usageSinglesNumber);
-                    //            }
-                    //            else
-                    //            {
-                                    
-                    //            }
-                    //        }
-                    //    }
-                    //}
                     ConsolePrinter.Instance.PrintMemoryUsage(ramTotalMb, ramUsedMb, ramUsagePercent);
                     System.Threading.Thread.Sleep(configuration.MemTime);
                 }
